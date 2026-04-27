@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { useEffect } from "react";
 import { Sparkles, Star, Heart } from "lucide-react";
 import { AIPicks } from "@/components/ai-picks";
 import type { Id } from "@/../convex/_generated/dataModel";
@@ -30,18 +29,6 @@ export function ProfileContent() {
     api.users.current,
     user?.id ? { clerkId: user.id } : "skip"
   );
-  const getOrCreate = useMutation(api.users.getOrCreate);
-
-  useEffect(() => {
-    if (!isLoaded || !user || convexUser !== null) return;
-    getOrCreate({
-      clerkId: user.id,
-      email: user.primaryEmailAddress?.emailAddress ?? "",
-      name: user.fullName ?? user.firstName ?? "Anonymous",
-      imageUrl: user.imageUrl ?? "",
-    }).catch(console.error);
-  }, [isLoaded, user, convexUser, getOrCreate]);
-
   const reviews = useQuery(
     api.reviews.listByUser,
     convexUser ? { userId: convexUser._id } : "skip"

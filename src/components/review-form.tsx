@@ -78,7 +78,7 @@ export function ReviewForm({ mediaType, mediaId, userId }: Props) {
         maxLength={2000}
         aria-label="Review text"
       />
-      <Button type="submit" disabled={loading || rating === 0}>
+      <Button type="submit" disabled={loading || rating === 0 || text.trim().length === 0}>
         {loading ? "Saving…" : "Submit Review"}
       </Button>
     </form>

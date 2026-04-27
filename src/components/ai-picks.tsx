@@ -50,16 +50,16 @@ export function AIPicks({ userId }: Props) {
   const favorites = useQuery(api.favorites.listMine, { userId });
   const reviews = useQuery(api.reviews.listByUser, { userId });
 
-  async function fetchRecommendations() {
-    if (!favorites || !reviews) return;
+  async function fetchRecommendations(favs = favorites, revs = reviews) {
+    if (!favs || !revs || loading) return;
     setLoading(true);
     try {
       const res = await fetch("/api/recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          favorites: favorites.map((f) => ({ title: f.title, mediaType: f.mediaType })),
-          reviews: reviews.map((r) => ({ mediaType: r.mediaType, rating: r.rating })),
+          favorites: favs.map((f) => ({ title: f.title, mediaType: f.mediaType })),
+          reviews: revs.map((r) => ({ mediaType: r.mediaType, rating: r.rating })),
         }),
       });
       const data = await res.json();
@@ -74,7 +74,7 @@ export function AIPicks({ userId }: Props) {
 
   useEffect(() => {
     if (favorites && reviews && !fetched) {
-      fetchRecommendations();
+      fetchRecommendations(favorites, reviews);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favorites, reviews]);
@@ -89,7 +89,7 @@ export function AIPicks({ userId }: Props) {
           <h2 className="text-xl font-semibold">AI Picks For You</h2>
         </div>
         {fetched && (
-          <Button variant="ghost" size="sm" onClick={fetchRecommendations} disabled={loading} className="gap-2 text-xs">
+          <Button variant="ghost" size="sm" onClick={() => fetchRecommendations(favorites, reviews)} disabled={loading} className="gap-2 text-xs">
             <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
@@ -108,7 +108,7 @@ export function AIPicks({ userId }: Props) {
               : "Couldn't generate recommendations right now. Try refreshing."}
           </p>
           {favorites.length > 0 && (
-            <Button onClick={fetchRecommendations} size="sm">Try again</Button>
+            <Button onClick={() => fetchRecommendations(favorites, reviews)} size="sm">Try again</Button>
           )}
         </div>
       ) : (

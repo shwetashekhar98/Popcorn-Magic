@@ -55,9 +55,13 @@ Recommend titles NOT already in their favorites. Mix movies and TV shows.`;
       messages: [{ role: "user", content: prompt }],
     });
 
-    const text = message.content[0].type === "text" ? message.content[0].text : "";
-    const recommendations: Recommendation[] = JSON.parse(text);
+    const block = message.content.find((b) => b.type === "text");
+    if (!block || block.type !== "text") throw new Error("No text response from Claude");
 
+    const jsonMatch = block.text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("No JSON array in response");
+
+    const recommendations: Recommendation[] = JSON.parse(jsonMatch[0]);
     return NextResponse.json({ recommendations });
   } catch (err) {
     console.error("Recommendations error:", err);

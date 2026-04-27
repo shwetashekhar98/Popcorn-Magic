@@ -26,13 +26,14 @@ export function HeroRotator({ items }: Props) {
   const [index, setIndex] = useState(0);
   const top = items.slice(0, 5);
 
-  const prev = useCallback(() => setIndex((i) => (i === 0 ? top.length - 1 : i - 1)), [top.length]);
-  const next = useCallback(() => setIndex((i) => (i === top.length - 1 ? 0 : i + 1)), [top.length]);
+  const len = top.length;
+  const prev = useCallback(() => setIndex((i) => (i === 0 ? len - 1 : i - 1)), [len]);
+  const next = useCallback(() => setIndex((i) => (i === len - 1 ? 0 : i + 1)), [len]);
 
   useEffect(() => {
-    const id = setInterval(next, 6000);
+    const id = setInterval(() => setIndex((i) => (i === len - 1 ? 0 : i + 1)), 6000);
     return () => clearInterval(id);
-  }, [next]);
+  }, [len]);
 
   const current = top[index];
   if (!current) return null;

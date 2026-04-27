@@ -18,7 +18,9 @@ export function UserSync() {
       name: user.fullName ?? user.firstName ?? "Anonymous",
       imageUrl: user.imageUrl ?? "",
     }).catch(console.error);
-  }, [isLoaded, isSignedIn, user, getOrCreate]);
+  // getOrCreate is stable from Convex — only re-run when user identity changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, isSignedIn, user?.id]);
 
   return null;
 }
