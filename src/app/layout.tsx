@@ -6,6 +6,7 @@ import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Toaster } from "@/components/ui/sonner";
+import { UserSync } from "@/components/user-sync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ConvexClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <UserSync />
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
