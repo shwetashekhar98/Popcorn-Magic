@@ -42,17 +42,21 @@ export function MediaCard({ item, mediaType }: Props) {
           sizes="144px"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-2 right-2">
-          <Badge className="text-xs px-1.5 py-0.5 bg-black/70 text-white border-0">
-            ⭐ {rating}
-          </Badge>
-        </div>
+        {rating > 0 && (
+          <div className="absolute top-2 right-2">
+            <Badge className="text-xs px-1.5 py-0.5 bg-black/70 text-white border-0">
+              ⭐ {rating}
+            </Badge>
+          </div>
+        )}
       </div>
       <div className="px-0.5">
         <p className="text-sm font-medium leading-tight line-clamp-2 group-hover:text-primary transition-colors">
           {title}
         </p>
-        <p className="text-xs text-muted-foreground mt-0.5">{year}</p>
+        {year !== "—" && (
+          <p className="text-xs text-muted-foreground mt-0.5">{year}</p>
+        )}
       </div>
     </Link>
   );
