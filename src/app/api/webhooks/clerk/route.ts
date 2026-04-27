@@ -22,7 +22,9 @@ interface WebhookEvent {
   data: ClerkUserPayload;
 }
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+if (!convexUrl) throw new Error("NEXT_PUBLIC_CONVEX_URL is not set");
+const convex = new ConvexHttpClient(convexUrl);
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
