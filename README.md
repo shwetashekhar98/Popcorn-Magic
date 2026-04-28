@@ -10,12 +10,12 @@ A full-stack movie & TV show discovery app with AI-powered recommendations, buil
 
 ## Team — NYU LeetCode Bootcamp 2026
 
-| Name | GitHub |
-|---|---|
-| Shweta Shekhar | [@shwetashekhar98](https://github.com/shwetashekhar98) |
-| Shweta Sethi | [@ShwetaSethi4](https://github.com/ShwetaSethi4) |
-| Divyansh Singh | [@mod-1](https://github.com/mod-1) |
-| Dan Ahimbisibwe | [@dahimbis](https://github.com/dahimbis) |
+| Name | Net ID | GitHub |
+|---|---|---|
+| Shweta Shekhar | ss19623 | [@shwetashekhar98](https://github.com/shwetashekhar98) |
+| Shweta Sethi | ss17335 | [@ShwetaSethi4](https://github.com/ShwetaSethi4) |
+| Divyansh Singh | ds8106 | [@mod-1](https://github.com/mod-1) |
+| Dan Ahimbisibwe | da3658 | [@dahimbis](https://github.com/dahimbis) |
 
 ---
 
