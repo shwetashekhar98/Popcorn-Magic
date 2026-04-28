@@ -1,10 +1,14 @@
 # 🍿 Popcorn Magic
 
+> Originally built as **Popcorn & Parsing** for the NYU LeetCode Bootcamp 2026 midterm — evolved into **Popcorn Magic** for the final demo.
+
 A full-stack movie & TV show discovery app with AI-powered recommendations, built with Next.js 16, Convex, Clerk, Claude AI, and the TMDb API.
 
 **Live:** https://popcornmagic.vercel.app
 
-**Presentation:** [NYU LeetCode Bootcamp 2026 Demo Deck](https://docs.google.com/presentation/d/1ynKY32-7VzxrXTR2PKDrK60ZAt0d7syHxk3AE_5_yjA/edit?usp=sharing)
+**Final Presentation:** [Popcorn Magic — Demo Deck](https://docs.google.com/presentation/d/1ynKY32-7VzxrXTR2PKDrK60ZAt0d7syHxk3AE_5_yjA/edit?usp=sharing)
+
+**Midterm Presentation:** [Popcorn & Parsing — Midterm Deck](https://docs.google.com/presentation/d/1uOwSMm9QLq1k43JX-LtYGcBw3fnRVSLBfM_7jY5zMTY/edit?slide=id.g396d461fbfe_2_45#slide=id.g396d461fbfe_2_45)
 
 ---
 
