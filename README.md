@@ -13,9 +13,9 @@ A full-stack movie & TV show discovery app with AI-powered recommendations, buil
 | Name | GitHub |
 |---|---|
 | Shweta Shekhar | [@shwetashekhar98](https://github.com/shwetashekhar98) |
-| Shweta Sethi | — |
-| Divyansh Singh | — |
-| Dan Ahimbisibisibwe | — |
+| Shweta Sethi | [@ShwetaSethi4](https://github.com/ShwetaSethi4) |
+| Divyansh Singh | [@mod-1](https://github.com/mod-1) |
+| Dan Ahimbisibwe | [@dahimbis](https://github.com/dahimbis) |
 
 ---
 
