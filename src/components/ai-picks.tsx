@@ -9,7 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import type { Id } from "@/../convex/_generated/dataModel";
-import type { Recommendation } from "@/app/api/recommendations/route";
+interface Recommendation {
+  title: string;
+  mediaType: "movie" | "tv";
+  reason: string;
+  genre: string;
+}
 
 interface Props {
   userId: Id<"users">;

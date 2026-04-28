@@ -8,8 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Sparkles, Star, Heart } from "lucide-react";
-import { AIPicks } from "@/components/ai-picks";
+import { Star, Heart, Sparkles } from "lucide-react";
+import { AiPicksTab } from "@/components/profile/AiPicksTab";
 import type { Id } from "@/../convex/_generated/dataModel";
 
 function relativeTime(ts: number): string {
@@ -104,7 +104,7 @@ export function ProfileContent() {
         </TabsList>
 
         <TabsContent value="ai-picks" className="mt-6">
-          <AIPicks userId={convexUser._id} />
+          <AiPicksTab userId={convexUser._id} />
         </TabsContent>
 
         <TabsContent value="reviews" className="mt-6">

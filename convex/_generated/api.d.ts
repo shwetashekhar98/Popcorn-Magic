@@ -9,6 +9,8 @@
  */
 
 import type * as favorites from "../favorites.js";
+import type * as feedback from "../feedback.js";
+import type * as recommendations from "../recommendations.js";
 import type * as reviews from "../reviews.js";
 import type * as users from "../users.js";
 
@@ -20,6 +22,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   favorites: typeof favorites;
+  feedback: typeof feedback;
+  recommendations: typeof recommendations;
   reviews: typeof reviews;
   users: typeof users;
 }>;
