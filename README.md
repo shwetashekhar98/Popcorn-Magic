@@ -1,8 +1,21 @@
 # 🍿 Popcorn Magic
 
-A full-stack movie & TV show discovery app with AI-powered recommendations, built with Next.js 16, Convex, Clerk, Claude AI, and the TMDb API. Built for the NYU LeetCode Bootcamp.
+A full-stack movie & TV show discovery app with AI-powered recommendations, built with Next.js 16, Convex, Clerk, Claude AI, and the TMDb API.
 
 **Live:** https://popcornmagic.vercel.app
+
+**Presentation:** [NYU LeetCode Bootcamp 2026 Demo Deck](https://docs.google.com/presentation/d/1ynKY32-7VzxrXTR2PKDrK60ZAt0d7syHxk3AE_5_yjA/edit?usp=sharing)
+
+---
+
+## Team — NYU LeetCode Bootcamp 2026
+
+| Name | GitHub |
+|---|---|
+| Shweta Shekhar | [@shwetashekhar98](https://github.com/shwetashekhar98) |
+| Shweta Sethi | — |
+| Divyansh Singh | — |
+| Dan Ahimbisibisibwe | — |
 
 ---
 
