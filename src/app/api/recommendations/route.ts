@@ -74,14 +74,16 @@ async function callClaude(
   console.log("[claude raw]", block.text.slice(0, 500));
 
   try {
-    const text = block.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
-    const parsed = JSON.parse(text) as { picks?: ClaudePick[] };
+    // Strip markdown fences, then extract the first {...} JSON object found
+    const stripped = block.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+    const match = stripped.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(match ? match[0] : stripped) as { picks?: ClaudePick[] };
     const picks = Array.isArray(parsed.picks) ? parsed.picks : [];
     console.log("[claude picks]", picks.length, picks.map(p => p.title));
     return picks;
   } catch {
+    console.error("[claude parse failed]", block.text.slice(0, 300));
     if (retries < 1) return callClaude(payload, excludedTitles, retries + 1);
-    console.error("[claude parse failed]", block.text.slice(0, 200));
     return [];
   }
 }
