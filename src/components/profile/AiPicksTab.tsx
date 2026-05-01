@@ -171,26 +171,33 @@ export function AiPicksTab({ userId }: Props) {
         </Button>
       </div>
 
-      {SECTIONS.filter((s) => !rails[s].hidden).map((section) => {
-        const rail = rails[section];
-        const title =
-          section === "becauseYouLoved" && rail.anchorTitle && !rail.loading
-            ? `Because you loved ${rail.anchorTitle}`
-            : RAIL_TITLES[section];
-
-        return (
-          <RecommendationRail
-            key={section}
-            title={title}
-            picks={rail.picks}
-            loading={rail.loading}
-            error={rail.error}
-            userId={userId}
-            onRetry={() => fetchSection(section)}
-            onRefresh={() => fetchSection(section, true)}
-          />
-        );
-      })}
+      {(() => {
+        const seen = new Set<number>();
+        return SECTIONS.filter((s) => !rails[s].hidden).map((section) => {
+          const rail = rails[section];
+          const title =
+            section === "becauseYouLoved" && rail.anchorTitle && !rail.loading
+              ? `Because you loved ${rail.anchorTitle}`
+              : RAIL_TITLES[section];
+          const dedupedPicks = rail.picks.filter((p) => {
+            if (seen.has(p.tmdbId)) return false;
+            seen.add(p.tmdbId);
+            return true;
+          });
+          return (
+            <RecommendationRail
+              key={section}
+              title={title}
+              picks={dedupedPicks}
+              loading={rail.loading}
+              error={rail.error}
+              userId={userId}
+              onRetry={() => fetchSection(section)}
+              onRefresh={() => fetchSection(section, true)}
+            />
+          );
+        });
+      })()}
     </div>
   );
 }
