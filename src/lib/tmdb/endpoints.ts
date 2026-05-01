@@ -110,27 +110,36 @@ export async function searchByTitleYear(
   mediaType: "movie" | "tv"
 ): Promise<SearchResult | null> {
   try {
-    if (mediaType === "movie") {
-      const res = await tmdbFetch<PaginatedResponse<{ id: number; poster_path: string | null }>>(
-        "/search/movie",
-        {
-          cache: "no-store",
-          searchParams: { query: title, primary_release_year: year },
-        }
-      );
-      const first = res.results[0];
-      return first ? { id: first.id, poster_path: first.poster_path } : null;
-    } else {
-      const res = await tmdbFetch<PaginatedResponse<{ id: number; poster_path: string | null }>>(
-        "/search/tv",
-        {
-          cache: "no-store",
-          searchParams: { query: title, first_air_date_year: year },
-        }
-      );
-      const first = res.results[0];
-      return first ? { id: first.id, poster_path: first.poster_path } : null;
+    const endpoint = mediaType === "movie" ? "/search/movie" : "/search/tv";
+    const yearParam = mediaType === "movie" ? "primary_release_year" : "first_air_date_year";
+
+    // Try with year first
+    const withYear = await tmdbFetch<PaginatedResponse<{ id: number; poster_path: string | null }>>(
+      endpoint,
+      { cache: "no-store", searchParams: { query: title, [yearParam]: year } }
+    );
+    if (withYear.results[0]) {
+      return { id: withYear.results[0].id, poster_path: withYear.results[0].poster_path };
     }
+
+    // Fall back to title-only search
+    const noYear = await tmdbFetch<PaginatedResponse<{ id: number; poster_path: string | null }>>(
+      endpoint,
+      { cache: "no-store", searchParams: { query: title } }
+    );
+    if (noYear.results[0]) {
+      return { id: noYear.results[0].id, poster_path: noYear.results[0].poster_path };
+    }
+
+    // Last resort: try the other media type
+    const otherEndpoint = mediaType === "movie" ? "/search/tv" : "/search/movie";
+    const otherType = await tmdbFetch<PaginatedResponse<{ id: number; poster_path: string | null }>>(
+      otherEndpoint,
+      { cache: "no-store", searchParams: { query: title } }
+    );
+    return otherType.results[0]
+      ? { id: otherType.results[0].id, poster_path: otherType.results[0].poster_path }
+      : null;
   } catch {
     return null;
   }
