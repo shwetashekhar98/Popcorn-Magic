@@ -154,8 +154,9 @@ export async function discoverHiddenGems(
     revalidate: 3600,
     searchParams: {
       with_genres: genreIds.join("|"),
+      "vote_count.gte": 150,
       "vote_count.lte": 2000,
-      "vote_average.gte": 6.5,
+      "vote_average.gte": 7.0,
       sort_by: "vote_average.desc",
       page: 1,
     },
