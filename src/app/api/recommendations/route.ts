@@ -1,3 +1,5 @@
+export const maxDuration = 60;
+
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
@@ -162,7 +164,11 @@ export async function GET(req: Request) {
     convex.query(api.feedback.listForUser, { userId, signal: "down" }),
   ]);
 
-  const profile = await buildTasteProfile(userId, favorites, reviews);
+  const profile = await buildTasteProfile(
+    userId,
+    favorites.slice(0, 20),
+    reviews.slice(0, 20)
+  );
 
   if (section === "different" && profile.topGenres.length < 3) {
     return new Response(null, { status: 204 });
