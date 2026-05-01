@@ -70,7 +70,12 @@ export function AiPicksTab({ userId }: Props) {
         }
 
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          let message = `HTTP ${res.status}`;
+          try {
+            const body = await res.json();
+            if (body?.error) message = body.error;
+          } catch {}
+          throw new Error(message);
         }
 
         const data = (await res.json()) as {

@@ -33,11 +33,14 @@ const VALID_SECTIONS = new Set<Section>([
   "different",
 ]);
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-if (!convexUrl) throw new Error("NEXT_PUBLIC_CONVEX_URL is not set");
-const convex = new ConvexHttpClient(convexUrl);
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL ?? "";
+const convex = convexUrl ? new ConvexHttpClient(convexUrl) : null;
 
-const anthropic = new Anthropic();
+function getAnthropic() {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
+  return new Anthropic({ apiKey: key });
+}
 
 const CLAUDE_SYSTEM =
   "You are a film and TV recommender. Respond with JSON only matching the provided schema — no markdown, no commentary. Never repeat titles in the user's lovedExamples, excludedTitles, or avoidTitles. The reason field must reference concrete elements of the user's taste (specific titles, genres, or rating patterns) — no generic phrasing like \"you'll love this.\"";
@@ -47,7 +50,7 @@ async function callClaude(
   excludedTitles: string[],
   retries = 0
 ): Promise<ClaudePick[]> {
-  const message = await anthropic.messages.create({
+  const message = await getAnthropic().messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 1000,
     system: CLAUDE_SYSTEM,
@@ -109,6 +112,14 @@ async function buildRailPicks(
 }
 
 export async function GET(req: Request) {
+  try {
+  if (!convex) {
+    return NextResponse.json({ error: "Convex not configured" }, { status: 500 });
+  }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: "Anthropic API key not configured" }, { status: 500 });
+  }
+
   const { userId: clerkId } = await auth();
   if (!clerkId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -280,4 +291,11 @@ export async function GET(req: Request) {
   });
 
   return NextResponse.json({ section, anchorTitle, picks, cached: false });
+  } catch (err) {
+    console.error("[recommendations]", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
