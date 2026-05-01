@@ -299,9 +299,15 @@ export async function GET(req: Request) {
   return NextResponse.json({ section, anchorTitle, picks, cached: false });
   } catch (err) {
     console.error("[recommendations]", err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Internal server error" },
-      { status: 500 }
-    );
+    let message = "Internal server error";
+    if (err instanceof Error) {
+      try {
+        const parsed = JSON.parse(err.message);
+        message = parsed?.error?.message ?? parsed?.message ?? err.message;
+      } catch {
+        message = err.message;
+      }
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
