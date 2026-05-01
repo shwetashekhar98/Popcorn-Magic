@@ -45,7 +45,14 @@ function getAnthropic() {
 }
 
 const CLAUDE_SYSTEM =
-  "You are a film and TV recommender. Respond with JSON only matching the provided schema — no markdown, no commentary. Never repeat titles in the user's lovedExamples, excludedTitles, or avoidTitles. The reason field must reference concrete elements of the user's taste (specific titles, genres, or rating patterns) — no generic phrasing like \"you'll love this.\"";
+  `You are a film and TV recommender. You MUST respond with ONLY a valid JSON object in this exact format — no markdown, no code blocks, no commentary, nothing else:
+{"picks":[{"title":"Movie Title","year":"2023","mediaType":"movie","reason":"one sentence referencing specific taste signals"},{"title":"Show Title","year":"2019","mediaType":"tv","reason":"one sentence referencing specific taste signals"}]}
+Rules:
+- "mediaType" must be exactly "movie" or "tv"
+- "year" must be a 4-digit string like "2021"
+- Only recommend titles that are well-known and definitely exist on TMDb
+- Never repeat titles from excludedTitles or avoidTitles
+- The reason must reference specific titles, genres, or rating patterns from the user's taste — no generic phrases`;
 
 async function callClaude(
   payload: object,
@@ -64,11 +71,17 @@ async function callClaude(
   const block = message.content.find((b) => b.type === "text");
   if (!block || block.type !== "text") throw new Error("No text response from Claude");
 
+  console.log("[claude raw]", block.text.slice(0, 500));
+
   try {
-    const parsed = JSON.parse(block.text) as { picks?: ClaudePick[] };
-    return Array.isArray(parsed.picks) ? parsed.picks : [];
+    const text = block.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+    const parsed = JSON.parse(text) as { picks?: ClaudePick[] };
+    const picks = Array.isArray(parsed.picks) ? parsed.picks : [];
+    console.log("[claude picks]", picks.length, picks.map(p => p.title));
+    return picks;
   } catch {
     if (retries < 1) return callClaude(payload, excludedTitles, retries + 1);
+    console.error("[claude parse failed]", block.text.slice(0, 200));
     return [];
   }
 }
