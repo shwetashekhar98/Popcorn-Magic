@@ -56,7 +56,8 @@ The profile's **AI Picks** tab runs four independent recommendation rails in par
 - 4 picks from Claude Haiku weighted by the user's top 5 genres and rating bias
 
 #### Rail 3 — "Hidden gems" (no LLM)
-- Queries TMDb `/discover` directly with the user's top 2 genres, `vote_count ≤ 2000`, `vote_average ≥ 6.5`, sorted by rating
+- Queries TMDb `/discover` directly with the user's top 2 genres, `vote_count` between 150–2000, `vote_average ≥ 7.0`, sorted by rating
+- The 150-vote floor filters out YouTube uploads and random non-film content that TMDb indexes
 - Movie/TV split mirrors the user's `mediaSplit` ratio (e.g. 70% movies → 3 movies + 1 TV)
 - No Claude call — faster, cheaper, and actually uses real vote counts
 
@@ -71,8 +72,11 @@ Built from the user's Convex data on every request:
 - **mediaSplit** — ratio of movies to TV across all favorites + reviews
 - **recentSignals**, **lovedExamples** (rated ≥ 9), **dislikedExamples** (rated ≤ 4) — all fed into the Claude prompt
 
-#### Direct deep-links (no more "Find it →")
-Claude returns `{ title, year, mediaType }`. The server runs a TMDb title+year search immediately after each pick to resolve a real `tmdbId` and `posterPath`. Cards link directly to `/movie/[tmdbId]` or `/tv/[tmdbId]`. If a title can't be found on TMDb, it is dropped and Claude is re-prompted (max 2 retries per rail).
+#### Direct deep-links
+Claude returns `{ title, year, mediaType }`. The server resolves each pick against TMDb with a 3-step fallback: title+year → title only → other media type. Cards link directly to `/movie/[tmdbId]` or `/tv/[tmdbId]`. If a title still can't be resolved, it is dropped and Claude is re-prompted (max 2 retries per rail).
+
+#### Cross-rail deduplication
+If the same title appears in multiple rails (e.g. driven by the same genre signals), it is shown only in the first rail that claims it. Later rails skip it silently.
 
 #### Feedback loop (👍 / 👎)
 - Each pick card has thumbs-up/thumbs-down buttons
@@ -87,6 +91,11 @@ Claude returns `{ title, year, mediaType }`. The server runs a TMDb title+year s
 
 #### Empty state
 If the user has fewer than 3 favorites, the AI Picks tab shows a CTA — no API calls are made.
+
+#### Production reliability
+- Vercel function timeout raised to 60s (`maxDuration = 60`) to accommodate multi-step Claude + TMDb resolution
+- Empty picks are never cached — if a rail returns no results, the next profile visit retries fresh rather than serving a stale empty state
+- Claude response parsing strips markdown fences and extracts JSON via regex to handle any preamble text in the response
 
 ### Infrastructure
 - **Convex** real-time database for users, reviews, favorites, recommendation cache, and feedback
