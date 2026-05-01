@@ -147,7 +147,7 @@ export async function GET(req: Request) {
 
   if (!force) {
     const cached = await convex.query(api.recommendations.getCached, { userId, section });
-    if (cached) {
+    if (cached && cached.picks.length > 0) {
       return NextResponse.json({
         section,
         anchorTitle: cached.anchorTitle,
@@ -287,14 +287,16 @@ export async function GET(req: Request) {
     picks = await buildRailPicks(claudePicks, 4, payload, avoidTitles);
   }
 
-  await convex.mutation(api.recommendations.save, {
-    userId,
-    section,
-    anchorTitle,
-    picks,
-    generationId,
-    generatedAt,
-  });
+  if (picks.length > 0) {
+    await convex.mutation(api.recommendations.save, {
+      userId,
+      section,
+      anchorTitle,
+      picks,
+      generationId,
+      generatedAt,
+    });
+  }
 
   return NextResponse.json({ section, anchorTitle, picks, cached: false });
   } catch (err) {
